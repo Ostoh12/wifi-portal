@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wi-Fi Payment Portal</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 500px; 
+            margin: 50px auto; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .plan-option {
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .plan-option:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+        .plan-option.selected {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+        input, button { 
+            width: 100%; 
+            padding: 12px; 
+            margin: 8px 0; 
+            border: 1px solid #ddd; 
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        button:hover { 
+            background: #0056b3; 
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        #successMessage {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Wi-Fi Payment Portal</h1>
+        <p class="subtitle">Select a plan and complete payment to access the internet</p>
+        
+        <form id="paymentForm">
+            <div class="form-group">
+                <label>Choose Your Plan:</label>
+                <div class="plan-option" onclick="selectPlan('1hour', 5)">
+                    <h3>🚀 1 Hour Access</h3>
+                    <p class="price">$5.00</p>
+                    <p style="color: #666; font-size: 14px;">Perfect for quick tasks</p>
+                </div>
+                <div class="plan-option" onclick="selectPlan('1day', 15)">
+                    <h3>⭐ 24 Hour Access</h3>
+                    <p class="price">$15.00</p>
+                    <p style="color: #666; font-size: 14px;">Great for day trips</p>
+                </div>
+                <div class="plan-option" onclick="selectPlan('1week', 50)">
+                    <h3>👑 1 Week Access</h3>
+                    <p class="price">$50.00</p>
+                    <p style="color: #666; font-size: 14px;">Best value for longer stays</p>
+                </div>
+                <input type="hidden" id="selectedPlan" name="plan">
+                <input type="hidden" id="selectedAmount" name="amount">
+            </div>
+
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567" required>
+            </div>
+
+            <button type="submit" id="submitBtn">💳 Pay Now & Connect to Internet</button>
+        </form>
+        
+        <div id="successMessage">
+            <h3>✅ Payment Successful!</h3>
+            <p>Thank you for your purchase! You now have <span id="accessTime">1 hour</span> of Wi-Fi access.</p>
+            <p>Connecting you to the internet...</p>
+            <div id="countdown">Redirecting in 5 seconds</div>
+        </div>
+
+        <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+            🔒 Secure payment processing • 📞 Support: 1-800-WIFI-HELP
+        </p>
+    </div>
+
+    <script>
+        let selectedPlan = '';
+        let selectedAmount = 0;
+
+        function selectPlan(plan, amount) {
+            selectedPlan = plan;
+            selectedAmount = amount;
+            
+            // Update UI
+            document.querySelectorAll('.plan-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update hidden fields
+            document.getElementById('selectedPlan').value = plan;
+            document.getElementById('selectedAmount').value = amount;
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validation
+            if (!selectedPlan) {
+                alert('Please select a Wi-Fi plan');
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            const accessTime = document.getElementById('accessTime');
+            const countdown = document.getElementById('countdown');
+            
+            // Set access time text
+            accessTime.textContent = selectedPlan === '1hour' ? '1 hour' : 
+                                   selectedPlan === '1day' ? '24 hours' : '1 week';
+            
+            successMessage.style.display = 'block';
+            document.getElementById('paymentForm').style.display = 'none';
+            
+            // Countdown timer
+            let seconds = 5;
+            const countdownInterval = setInterval(() => {
+                countdown.textContent = `Redirecting in ${seconds} seconds...`;
+                seconds--;
+                
+                if (seconds < 0) {
+                    clearInterval(countdownInterval);
+                    // Simulate granting internet access
+                    alert('🎉 Wi-Fi Access Granted! You are now connected to the internet.');
+                    // In real system, this would redirect to internet
+                    // window.location.href = 'http://www.google.com';
+                }
+            }, 1000);
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#007bff';
+                this.style.boxShadow = '0 0 5px rgba(0,123,255,0.3)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#ddd';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
